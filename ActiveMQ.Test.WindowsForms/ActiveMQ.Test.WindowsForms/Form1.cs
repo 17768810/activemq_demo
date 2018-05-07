@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Apache.NMS;
@@ -21,11 +22,24 @@ namespace ActiveMQ.Test.WindowsForms
 
             //failover:(tcp://172.18.20.132:61616)?timeout=5000&jms.useAsyncSend=true
             //初始化工厂，这里默认的URL是不需要修改的
-            factory = new ConnectionFactory("tcp://172.18.20.132:61616");
+            factory = new ConnectionFactory("tcp://172.18.20.75:61616");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // 一次多少个请求
+            var count = 1;
+            if (!int.TryParse(textBox_count.Text, out count))
+                count = 1;
+            // 间隔
+            var sleep = 1000;
+            if (!int.TryParse(textBox_sleep.Text, out sleep))
+                sleep = 1000;
+            // 共几次
+            var num = 1000;
+            if (!int.TryParse(textBox_num.Text, out num))
+                num = 1;
+
             //通过工厂建立连接
             using (IConnection connection = factory.CreateConnection())
             {
@@ -34,15 +48,24 @@ namespace ActiveMQ.Test.WindowsForms
                 {
                     //通过会话创建生产者，方法里面new出来的是MQ中的Queue
                     IMessageProducer prod = session.CreateProducer(new Apache.NMS.ActiveMQ.Commands.ActiveMQQueue(textBox_queueName.Text.Trim()));
-                    //创建一个发送的消息对象
-                    ITextMessage message = prod.CreateTextMessage();
-                    //给这个对象赋实际的消息
-                    message.Text = textBox1.Text;
-                    //设置消息对象的属性，这个很重要哦，是Queue的过滤条件，也是P2P消息的唯一指定属性
-                    //message.Properties.SetString("filter", "demo");
-                    //生产者把消息发送出去，几个枚举参数MsgDeliveryMode是否长链，MsgPriority消息优先级别，发送最小单位，当然还有其他重载
-                    prod.Send(message, MsgDeliveryMode.NonPersistent, MsgPriority.Normal, TimeSpan.MinValue);
-                    lbMessage.Text = "发送成功!!";
+
+                    for (int i = 0; i < num; i++)
+                    {
+                        for (int j = 0; j < count; j++)
+                        {
+                            //创建一个发送的消息对象
+                            ITextMessage message = prod.CreateTextMessage();
+                            //给这个对象赋实际的消息
+                            message.Text = textBox1.Text;
+                            //设置消息对象的属性，这个很重要哦，是Queue的过滤条件，也是P2P消息的唯一指定属性
+                            //message.Properties.SetString("filter", "demo");
+                            //生产者把消息发送出去，几个枚举参数MsgDeliveryMode是否长链，MsgPriority消息优先级别，发送最小单位，当然还有其他重载
+                            prod.Send(message, MsgDeliveryMode.NonPersistent, MsgPriority.Normal, TimeSpan.MinValue);
+                        }
+                        Thread.Sleep(sleep);
+                    }
+
+                    lbMessage.Text = DateTime.Now.ToLongTimeString() + " 发送成功!!";
                     //txtMessage.Text = "";
                     //txtMessage.Focus();
                 }

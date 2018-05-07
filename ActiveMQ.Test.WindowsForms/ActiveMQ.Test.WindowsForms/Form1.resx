@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>&lt;xml&gt;&lt;ToUserName&gt;&lt;![CDATA[gh_a3a44a24977a]]&gt;&lt;/ToUserName&gt;\n&lt;FromUserName&gt;&lt;![CDATA[oloNKs-jxGyxJ2Sh01-2cid3eKuw]]&gt;&lt;/FromUserName&gt;\n&lt;CreateTime&gt;1518337728&lt;/CreateTime&gt;\n&lt;MsgType&gt;&lt;![CDATA[event]]&gt;&lt;/MsgType&gt;\n&lt;Event&gt;&lt;![CDATA[unsubscribe]]&gt;&lt;/Event&gt;\n&lt;EventKey&gt;&lt;![CDATA[]]&gt;&lt;/EventKey&gt;\n&lt;/xml&gt;</value>
+  </data>
 </root>
